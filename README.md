@@ -1,54 +1,54 @@
-# Basic-spell-checker
- 
-This repository contains minimum edit distance algorithm to find spell-checked versions of words.
+# Basic Spell Checker
 
-`utils.py` contains all necessary functions and besides you only need numpy. 
+This repository implements a spell-checking algorithm based on the minimum edit distance. The main functionality is contained in `utils.py`, and the only required dependency besides Python is `numpy`.
 
-Let's start with the functions of `utils.py`:
+## Overview of `utils.py` Functions
 
-## Functions
+### `process_data`
+Processes a given text file and extracts all words in lowercase. Words are identified using the regular expression `\w+`, which matches alphanumeric characters and underscores.
 
-### process_data
+### `get_counter`
+Generates a dictionary that counts the occurrences of each word in the processed data.
 
-Processing the given file and returns all words that lowered. Finding words are provided by `\w+` regular expression.
-This matches words with lowercase, uppercase, digit and underscore characters.
+### `get_probs`
+Calculates the probability of each word by dividing its frequency by the total number of words.
 
-### get_counter 
+### `edit_one_letter`
+Generates all possible variations of a word with one edit operation. The following operations are supported:
 
-Gives counter dictionary of all word. 
+1. **Split**
+   - Splits the word at every possible position into two parts: left and right.
+   - Example:
+     - **Word**: `play`
+     - **Splits**: `[('', 'play'), ('p', 'lay'), ('pl', 'ay'), ('pla', 'y'), ('play', '')]`
 
-### get_probs 
+2. **Delete**
+   - Removes the first character of the right part of each split.
+   - Example:
+     - **Deletes**: `['lay', 'pay', 'ply', 'pla']`
 
-A probability of word is equal to how many times that word appeared divided by sum of total words.
+3. **Switch**
+   - Swaps the first two characters of the right part of each split.
+   - Example:
+     - **Switches**: `['lpay', 'paly', 'plya']`
 
-### edit_one_letter
+4. **Replace**
+   - Replaces the first character of the right part with every letter of the alphabet.
+   - Example:
+     - **Replaces**: `['alay', 'blay', 'clay', 'dlay', ...]`
 
-This function gives you to one edit version of every word.
-That can be happend with 4 interaction: Deletion, switching, replacing, insertion.
+5. **Insert**
+   - Inserts every letter of the alphabet between the left and right parts of each split.
+   - Example:
+     - **Inserts**: `['aplay', 'bplay', 'cplay', ...]`
 
-1) split
+Combining these operations, `edit_one_letter` generates all possible one-edit variations of the input word.
 
-splitting word through every character gives us left and right split. For example:
+### `edit_two_letters`
+Generates all possible variations of a word with two edit operations by applying `edit_one_letter` twice.
 
-**word**: play
+## Choosing the Best Match
+The algorithm evaluates all possible edited words and selects the one with the highest probability from the word frequency data.
 
-**splits**: [('', 'play'), ('p', 'lay'), ('pl', 'ay'), ('pla', 'y'), ('play', '')]
-
-2) delete
-
-Deletion happens by removing every first element from the right split.
-
-**deletes**: ['lay', 'pay', 'ply', 'pla']
-
-3) switch
-
-switching happens by we swap first and second character of right split .
-
-**switches**: ['lpay', 'paly', 'plya']
-
-4) replaces
-
-
-**replaces**: ['aan', 'ban', 'caa', 'cab', 'cac', 'cad', 'cae', 'caf', 'cag', 'cah', 'cai', 'caj', 'cak', 'cal', 'cam', 'cao', 'cap', 'caq', 'car', 'cas', 'cat', 'cau', 'cav', 'caw', 'cax', 'cay', 'caz', 'cbn', 'ccn', 'cdn', 'cen', 'cfn', 'cgn', 'chn', 'cin', 'cjn', 'ckn', 'cln', 'cmn', 'cnn', 'con', 'cpn', 'cqn', 'crn', 'csn', 'ctn', 'cun', 'cvn', 'cwn', 'cxn', 'cyn', 'czn', 'dan', 'ean', 'fan', 'gan', 'han', 'ian', 'jan', 'kan', 'lan', 'man', 'nan', 'oan', 'pan', 'qan', 'ran', 'san', 'tan', 'uan', 'van', 'wan', 'xan', 'yan', 'zan'] 
-
+This approach ensures that the most likely correction is suggested based on the input data.
 

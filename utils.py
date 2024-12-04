@@ -91,3 +91,17 @@ def min_edit_distance(source, target, ins_cost = 1, del_cost = 1, rep_cost = 2):
           
     med = D[m,n]
     return D, med
+
+
+def get_corrections(word, probs, vocab, verbose = False):
+    suggestions = []
+    n_best = []
+    
+    suggestions = list((word in vocab and word) or edit_one_letter(word).intersection(vocab) or edit_two_letters(word).intersection(vocab))
+    print(suggestions)
+    n_best = [[s,probs[s]] for s in list(suggestions)]
+    
+    if verbose: 
+        print("suggestions = ", suggestions)
+
+    return n_best
